@@ -1,0 +1,65 @@
+name: Update Formula
+
+# Receives the `update-formula` repository dispatch sent by each source
+# project's release workflow and bumps the matching formula in place. The
+# payload carries the formula name, the release tag, and the source repository;
+# the bump script rewrites the download URLs and refreshes each sha256 from the
+# release's checksums file.
+
+on:
+  repository_dispatch:
+    types: [update-formula]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-formula-${{ github.event.client_payload.formula }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Bump ${{ github.event.client_payload.formula }} to ${{ github.event.client_payload.tag }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Validate payload
+        env:
+          FORMULA: ${{ github.event.client_payload.formula }}
+          TAG: ${{ github.event.client_payload.tag }}
+          REPO: ${{ github.event.client_payload.repo }}
+        run: |
+          set -euo pipefail
+          : "${FORMULA:?missing formula in dispatch payload}"
+          : "${TAG:?missing tag in dispatch payload}"
+          : "${REPO:?missing repo in dispatch payload}"
+          case "$FORMULA" in
+            */*|*..*|"") echo "refusing suspicious formula name: $FORMULA" >&2; exit 1 ;;
+          esac
+          test -f "Formula/${FORMULA}.rb" || { echo "no such formula: Formula/${FORMULA}.rb" >&2; exit 1; }
+
+      - name: Bump formula
+        env:
+          FORMULA: ${{ github.event.client_payload.formula }}
+          TAG: ${{ github.event.client_payload.tag }}
+          REPO: ${{ github.event.client_payload.repo }}
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/update_formula.py "Formula/${FORMULA}.rb" "$REPO" "$TAG"
+
+      - name: Commit and push
+        env:
+          FORMULA: ${{ github.event.client_payload.formula }}
+          TAG: ${{ github.event.client_payload.tag }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "Formula/${FORMULA}.rb already at ${TAG}; nothing to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "Formula/${FORMULA}.rb"
+          git commit -m "${FORMULA}: update to ${TAG}"
+          git push
