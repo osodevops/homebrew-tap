@@ -1,20 +1,20 @@
 class KafkaBackup < Formula
   desc "CLI tool for Kafka backup and restore operations"
   homepage "https://github.com/osodevops/kafka-backup"
-  version "0.15.12"
+  version "0.15.13"
   if OS.mac?
     if Hardware::CPU.arm?
-      url "https://github.com/osodevops/kafka-backup/releases/download/v0.15.12/kafka-backup-cli-aarch64-apple-darwin.tar.xz"
-      sha256 "53df0b08f412a8979524e82c4741099b8fd6fdaa7a370ff2313b6b9e7c36427e"
+      url "https://github.com/osodevops/kafka-backup/releases/download/v0.15.13/kafka-backup-cli-aarch64-apple-darwin.tar.xz"
+      sha256 "d40d526f21cae7713dbeab2a130d4d9f37a05c8cf8d144644301e1dba5c96e96"
     end
     if Hardware::CPU.intel?
-      url "https://github.com/osodevops/kafka-backup/releases/download/v0.15.12/kafka-backup-cli-x86_64-apple-darwin.tar.xz"
-      sha256 "664a9b91c1bb4ec7ab9c4e5dee7e91797e06dc76138d895cd8403be2cec60917"
+      url "https://github.com/osodevops/kafka-backup/releases/download/v0.15.13/kafka-backup-cli-x86_64-apple-darwin.tar.xz"
+      sha256 "5ac2ddc3634e06fd45e13a2abd651498277ce9e1e55e3acc2f474c3fea51b8b9"
     end
   end
   if OS.linux? && Hardware::CPU.intel?
-    url "https://github.com/osodevops/kafka-backup/releases/download/v0.15.12/kafka-backup-cli-x86_64-unknown-linux-gnu.tar.xz"
-    sha256 "c2ccb8d33d41518ebb5b042b88048429663f49ced2e415cdd9d206d25df66cc1"
+    url "https://github.com/osodevops/kafka-backup/releases/download/v0.15.13/kafka-backup-cli-x86_64-unknown-linux-gnu.tar.xz"
+    sha256 "ec3af1f93b17951dad9175ccb448de2662d043ac5d353ac4bd8bb6c417e4b37f"
   end
   license "MIT"
 
@@ -41,9 +41,15 @@ class KafkaBackup < Formula
   end
 
   def install
-    bin.install "kafka-backup" if OS.mac? && Hardware::CPU.arm?
-    bin.install "kafka-backup" if OS.mac? && Hardware::CPU.intel?
-    bin.install "kafka-backup" if OS.linux? && Hardware::CPU.intel?
+    if OS.mac? && Hardware::CPU.arm?
+      bin.install "kafka-backup"
+    end
+    if OS.mac? && Hardware::CPU.intel?
+      bin.install "kafka-backup"
+    end
+    if OS.linux? && Hardware::CPU.intel?
+      bin.install "kafka-backup"
+    end
 
     install_binary_aliases!
 
