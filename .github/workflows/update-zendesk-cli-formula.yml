@@ -1,0 +1,104 @@
+name: Update Zendesk CLI Formula
+run-name: Update zendesk-cli to ${{ github.event.client_payload.tag || inputs.tag }}
+
+on:
+  repository_dispatch:
+    types: [update-formula]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to publish (for example, v0.1.0)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-zendesk-cli-formula
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Update zendesk-cli formula
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.client_payload.formula == 'zendesk-cli' &&
+      github.event.client_payload.repo == 'osodevops/zendesk-cli')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TAG: ${{ github.event.client_payload.tag || inputs.tag }}
+      RELEASE_REPOSITORY: ${{ github.event.client_payload.repo || 'osodevops/zendesk-cli' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Validate release request
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid release tag: $TAG" >&2
+            exit 1
+          fi
+          if [[ "$RELEASE_REPOSITORY" != "osodevops/zendesk-cli" ]]; then
+            echo "Unexpected release repository: $RELEASE_REPOSITORY" >&2
+            exit 1
+          fi
+
+      - name: Download release checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error \
+            --retry 5 --retry-all-errors \
+            "https://github.com/${RELEASE_REPOSITORY}/releases/download/${TAG}/checksums-sha256.txt" \
+            --output checksums-sha256.txt
+
+      - name: Update formula URLs and checksums
+        run: >-
+          ruby scripts/update-zendesk-cli-formula.rb
+          "$TAG"
+          "$RELEASE_REPOSITORY"
+          checksums-sha256.txt
+          Formula/zendesk-cli.rb
+
+      - name: Validate formula update
+        shell: bash
+        run: |
+          set -euo pipefail
+          ruby -c scripts/update-zendesk-cli-formula.rb
+          ruby -c Formula/zendesk-cli.rb
+          git diff --check
+          if ! grep -Fq "releases/download/${TAG}/zdk-${TAG}-" Formula/zendesk-cli.rb; then
+            echo "Formula does not reference ${TAG}" >&2
+            exit 1
+          fi
+
+      - name: Refuse to publish placeholder checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -Eq 'sha256 "0{64}"' Formula/zendesk-cli.rb; then
+            echo "Formula still contains the all-zero placeholder SHA-256; refusing to publish" >&2
+            exit 1
+          fi
+          if grep -Fq "releases/download/v0.0.0/" Formula/zendesk-cli.rb; then
+            echo "Formula still references the v0.0.0 placeholder release; refusing to publish" >&2
+            exit 1
+          fi
+
+      - name: Commit and publish formula
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- Formula/zendesk-cli.rb; then
+            echo "Formula already publishes ${TAG}"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/zendesk-cli.rb
+          git commit -m "Update zendesk-cli to ${TAG}"
+          git push origin HEAD:main
