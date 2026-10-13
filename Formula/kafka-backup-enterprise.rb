@@ -1,22 +1,22 @@
 class KafkaBackupEnterprise < Formula
   desc "Enterprise Kafka backup — Schema Registry, RBAC, encryption. 14-day free trial."
   homepage "https://kafkabackup.com/enterprise"
-  version "0.6.0"
+  version "0.6.1"
   license "LicenseRef-Proprietary"
 
   if OS.mac?
     if Hardware::CPU.arm?
-      url "https://github.com/osodevops/kafka-backup-enterprise-releases/releases/download/v0.6.0/kafka-backup-aarch64-macos.tar.gz"
-      sha256 "a2a1080e1f4329e08f9b73f467eed9c67289fe2229420f9d964bf73e2cc339f0"
+      url "https://github.com/osodevops/kafka-backup-enterprise-releases/releases/download/v0.6.1/kafka-backup-aarch64-macos.tar.gz"
+      sha256 "784c5e157efd0176037e8cf63055d4d4a9c1130658fb4a8abd5f665218b57a34"
     end
     if Hardware::CPU.intel?
-      url "https://github.com/osodevops/kafka-backup-enterprise-releases/releases/download/v0.6.0/kafka-backup-x86_64-macos.tar.gz"
-      sha256 "a46373d051c4b49243899e1488740ecd30287b2f15f655db9da3cecd70d0f86c"
+      url "https://github.com/osodevops/kafka-backup-enterprise-releases/releases/download/v0.6.1/kafka-backup-x86_64-macos.tar.gz"
+      sha256 "637277aef0c95cd96bc63ddbed2c9c427217b0ea9c51d42e3a8af083196f7883"
     end
   end
   if OS.linux? && Hardware::CPU.intel?
-    url "https://github.com/osodevops/kafka-backup-enterprise-releases/releases/download/v0.6.0/kafka-backup-x86_64-linux.tar.gz"
-    sha256 "127278b68458a304a9e182ae8fdf3b9fc2bc61b245c7e8de6e21ef429530eea9"
+    url "https://github.com/osodevops/kafka-backup-enterprise-releases/releases/download/v0.6.1/kafka-backup-x86_64-linux.tar.gz"
+    sha256 "7145554ae1b8688951957250645850b3982b954be4751cc607a68dc11af0fd8c"
   end
 
   def install
@@ -24,6 +24,6 @@ class KafkaBackupEnterprise < Formula
   end
 
   test do
-    assert_match "kafka-backup 0.6.0", shell_output("#{bin}/kafka-backup-enterprise --version")
+    assert_match "kafka-backup 0.6.1", shell_output("#{bin}/kafka-backup-enterprise --version")
   end
 end
