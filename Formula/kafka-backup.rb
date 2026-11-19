@@ -1,20 +1,20 @@
 class KafkaBackup < Formula
   desc "CLI tool for Kafka backup and restore operations"
   homepage "https://github.com/osodevops/kafka-backup"
-  version "0.29.0"
+  version "0.30.0"
   if OS.mac?
     if Hardware::CPU.arm?
-      url "https://github.com/osodevops/kafka-backup/releases/download/v0.29.0/kafka-backup-cli-aarch64-apple-darwin.tar.xz"
-      sha256 "6e4727be6dd55ba661aa35a1412bc0019b52925ab9b4a4fccbaf9f8b77946f44"
+      url "https://github.com/osodevops/kafka-backup/releases/download/v0.30.0/kafka-backup-cli-aarch64-apple-darwin.tar.xz"
+      sha256 "e8d31c9df119fc5481d4f498ccd5d9c4d2df740be8dadb5ca4e56c1c74a663bd"
     end
     if Hardware::CPU.intel?
-      url "https://github.com/osodevops/kafka-backup/releases/download/v0.29.0/kafka-backup-cli-x86_64-apple-darwin.tar.xz"
-      sha256 "08a972ed70b5d39a872223b54527c60d3803ced341df00df045b782897f7edb7"
+      url "https://github.com/osodevops/kafka-backup/releases/download/v0.30.0/kafka-backup-cli-x86_64-apple-darwin.tar.xz"
+      sha256 "b4c38dfa29267b4d81a3ae9c4fa35597a88767d3aa843f150cf44d3287fa78e7"
     end
   end
   if OS.linux? && Hardware::CPU.intel?
-    url "https://github.com/osodevops/kafka-backup/releases/download/v0.29.0/kafka-backup-cli-x86_64-unknown-linux-gnu.tar.xz"
-    sha256 "f51a953fa7c32cfaf6509b72e5d992c6ae8efb9d18b0f38eea0fddb48e31193e"
+    url "https://github.com/osodevops/kafka-backup/releases/download/v0.30.0/kafka-backup-cli-x86_64-unknown-linux-gnu.tar.xz"
+    sha256 "0bd056c1dbeec1024da0d156657e21c2f7845e50235c6a408d22f256b235a399"
   end
   license "MIT"
 
