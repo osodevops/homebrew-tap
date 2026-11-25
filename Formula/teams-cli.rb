@@ -5,23 +5,23 @@ class TeamsCli < Formula
 
   if OS.mac?
     if Hardware::CPU.arm?
-      url "https://github.com/osodevops/ms-teams-cli/releases/download/v0.12.1/teams-v0.12.1-aarch64-apple-darwin.tar.gz"
-      sha256 "6e1a2a23bf530d429007377a123902cf82d132aab4aa8264b2dda9356416841c"
+      url "https://github.com/osodevops/ms-teams-cli/releases/download/v0.13.0/teams-v0.13.0-aarch64-apple-darwin.tar.gz"
+      sha256 "d54e204a8db4cf0bafda3450c7530fd7900cf71581a383421d5ca7dd642562f2"
     end
     if Hardware::CPU.intel?
-      url "https://github.com/osodevops/ms-teams-cli/releases/download/v0.12.1/teams-v0.12.1-x86_64-apple-darwin.tar.gz"
-      sha256 "3c3006e104c1d5d81a3010153057eaa6cb2df9f36108be7413f46e89bfbebf50"
+      url "https://github.com/osodevops/ms-teams-cli/releases/download/v0.13.0/teams-v0.13.0-x86_64-apple-darwin.tar.gz"
+      sha256 "45c9e500095f19a1ed44bdc9b627186042eef4c9548399715b28b242f6e10984"
     end
   end
 
   if OS.linux?
     if Hardware::CPU.arm?
-      url "https://github.com/osodevops/ms-teams-cli/releases/download/v0.12.1/teams-v0.12.1-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "cc10d265848a05c3da0a19d76fdd6cc3d509d015827cb51e76dd714776d92558"
+      url "https://github.com/osodevops/ms-teams-cli/releases/download/v0.13.0/teams-v0.13.0-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "5484113f9343ed8b33e48c0d30aca3d63bc6e136956e42718bf97ac6ce6c7793"
     end
     if Hardware::CPU.intel?
-      url "https://github.com/osodevops/ms-teams-cli/releases/download/v0.12.1/teams-v0.12.1-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "6bfa14f389039ed16ab17f9e81c40a78147597a9a5856dd96775c824a25ab861"
+      url "https://github.com/osodevops/ms-teams-cli/releases/download/v0.13.0/teams-v0.13.0-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "a3a5ef902903b0b3a95f76a5a152df6522e9ebafb24f4fb00a69b73e1548d3d7"
     end
   end
 
